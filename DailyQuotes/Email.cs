@@ -22,8 +22,8 @@ namespace DailyQuotes
             string text = "";
             foreach (var quote in list)
             {
-                text += "<p><b>" + quote.Book + "</b></p>";
-                text += "<blockquote>" + quote.Quote + "</blockquote><hr>";
+                text += "<p><b>" + quote.Book + "</b><br>";
+                text += quote.Quote + "</p><hr>";
             }
 
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)

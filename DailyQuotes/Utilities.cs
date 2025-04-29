@@ -31,15 +31,6 @@ namespace DailyQuotes
             {
                 var list = GetQuoteList();
 
-                //test
-                //string textFile = System.AppDomain.CurrentDomain.BaseDirectory + @"\log.txt";
-                //string log = "";
-                //foreach ( var item in list ) 
-                //{
-                //    log += item.ID + ", ";
-                //}
-                //File.WriteAllText(textFile, log);
-
                 Email.SendEmail(list);
                 WriteDate();
             }
@@ -48,17 +39,32 @@ namespace DailyQuotes
         public static List<QuoteModel> GetQuoteList()
         {
             var list = new List<QuoteModel>();
-            int NoQuotes = 3;
-            Random r = new Random();
             int maxQuoteID = Query.GetMaxQuoteID();
-            for (int i = 0; i < NoQuotes; i++)
-            {
-                
-                int rInt = r.Next(1, maxQuoteID);
-                var quote = Query.GetQuote(rInt);
-                list.Add(quote);
-            }
+
+            int batch1 = (int)Math.Floor((decimal)maxQuoteID / 3);
+            int batch2 = batch1 * 2;
+
+            Sleep();
+            list.Add(GetQuote(1, batch1));
+            Sleep();
+            list.Add(GetQuote(batch1, batch2));
+            Sleep();
+            list.Add(GetQuote(batch2, maxQuoteID));
             return list;
+        }
+
+        static void Sleep()
+        {
+            Random r = new Random();
+            var rInt = r.Next(2, 8);
+            System.Threading.Thread.Sleep(rInt * 1234);
+        }
+
+        static QuoteModel GetQuote(int min, int max)
+        {
+            Random r = new Random();
+            var rInt = r.Next(min, max + 1);
+            return Query.GetQuote(rInt);
         }
     }
 }
